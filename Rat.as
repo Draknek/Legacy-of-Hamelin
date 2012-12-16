@@ -62,6 +62,8 @@ package
 			
 			hasMoved = true;
 			
+			if (type != "rat") return;
+			
 			if (dx < 0) direction = "left";
 			else if (dx > 0) direction = "right";
 			else if (dy < 0) direction = "up";
