@@ -5,55 +5,60 @@ package
 	import net.flashpunk.masks.*;
 	import net.flashpunk.utils.*;
 	
-	public class Player extends Entity
+	public class Rat extends Entity
 	{
-		[Embed(source="images/player.png")]
+		[Embed(source="images/rat.png")]
 		public static const Gfx: Class;
 		
-		public var moveTween:Tween;
+		public var hasMoved:Boolean = false;
 		
-		public static const MOVE_TIME: Number = 16;
+		public var toX:int;
+		public var toY:int;
 		
 		public var sprite:Spritemap;
 		
-		public function Player (_x:Number = 0, _y:Number = 0)
+		public var moveTween:Tween;
+		
+		public function Rat (_x:Number, _y:Number)
 		{
 			x = _x;
 			y = _y;
 			
-			type = "player";
+			type = "rat";
 			
 			setHitbox(Main.TW, Main.TW);
 			
 			sprite = new Spritemap(Gfx, 16, 16);
+			sprite.frame = 3;
 			
 			graphic = sprite;
 		}
 		
 		public override function update (): void
 		{
-			if (moveTween && moveTween.active) {
-				return;
-			}
 			
-			var dx:int = int(Input.check(Key.RIGHT)) - int(Input.check(Key.LEFT));
+		}
+		
+		public function tryMoving (dx:int, dy:int): void
+		{
+			if (hasMoved) return;
 			
-			if (! dx) {
-				var dy:int = int(Input.check(Key.DOWN)) - int(Input.check(Key.UP));
-			}
-			
-			if (! dx && ! dy) return;
+			hasMoved = true;
 			
 			var speed:int = Main.TW;
 			
-			var toX:int = x+speed*dx;
-			var toY:int = y+speed*dy;
+			toX = x+speed*dx;
+			toY = y+speed*dy;
 			
 			if (toX < 0 || toY < 0 || toX >= FP.width || toY >= FP.height) {
+				toX = x;
+				toY = y;
 				return;
 			}
 			
 			if (collide("solid", toX, toY) || collide("water", toX, toY)) {
+				toX = x;
+				toY = y;
 				return;
 			}
 			
@@ -63,17 +68,13 @@ package
 				rat.tryMoving(dx, dy);
 				
 				if (rat.x == rat.toX && rat.y == rat.toY) {
+					toX = x;
+					toY = y;
 					return;
 				}
 			}
 			
-			for each (rat in Level(world).rats) {
-				rat.tryMoving(dx, dy);
-			}
-			
-			moveTween = FP.tween(this, {x: toX, y: toY}, MOVE_TIME, {tweener:FP.world});
-			
-			//Audio.playNote();
+			moveTween = FP.tween(this, {x: x + speed*dx, y: y + speed*dy}, Player.MOVE_TIME);
 		}
 	}
 }

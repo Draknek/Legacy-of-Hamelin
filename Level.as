@@ -12,6 +12,8 @@ package
 		
 		public var levelID:int;
 		
+		public var rats:Array = [];
+		
 		public function Level (src:Tilemap = null, i:int = 0)
 		{
 			levelID = i;
@@ -44,12 +46,20 @@ package
 						case 1:
 							e = new Player(x, y);
 						break;
+						case 2:
+							e = new Rat(x, y);
+							rats.push(e);
+						break;
 						case 7:
 							solidMask.setTile(i, j, true);
 						break;
 						case 8:
 							waterMask.setTile(i, j, true);
 						break;
+						case 0:
+						break;
+						default:
+							solidMask.setTile(i, j, true);
 					}
 					
 					if (e) {
@@ -75,6 +85,10 @@ package
 			if (Main.devMode && Input.pressed(Key.E)) {
 				FP.world = new Editor();
 				return;
+			}
+			
+			for each (var rat:Rat in rats) {
+				rat.hasMoved = false;
 			}
 			
 			super.update();
