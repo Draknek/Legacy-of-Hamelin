@@ -106,6 +106,14 @@ package
 		public function stopWalk ():void
 		{
 			sprite.play(direction);
+			
+			var sewer:Sewer = collide("sewer", x, y) as Sewer;
+			
+			if (sewer && ! sewer.full) {
+				sewer.addRat();
+				visible = false;
+				type = "";
+			}
 		}
 	}
 }

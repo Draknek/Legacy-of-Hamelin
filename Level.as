@@ -50,6 +50,9 @@ package
 							e = new Rat(x, y);
 							rats.push(e);
 						break;
+						case 6:
+							e = new Sewer(x, y);
+						break;
 						case 7:
 							solidMask.setTile(i, j, true);
 						break;
