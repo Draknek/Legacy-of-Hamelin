@@ -4,18 +4,31 @@ package
 	import net.flashpunk.debug.*;
 	import net.flashpunk.utils.*;
 	
+	import flash.net.*;
+	
 	[SWF(width = "640", height = "480", backgroundColor="#000000")]
 	public class Main extends Engine
 	{
+		public static const TW:int = 16;
+		public static const TILES_WIDE:int = 320/16;
+		public static const TILES_HIGH:int = 240/16;
+		
+		public static var devMode:Boolean = true;
+		
+		public static const so:SharedObject = SharedObject.getLocal("draknek/hamelin", "/");
+		
 		public function Main () 
 		{
-			super(640, 480, 60, true);
-			FP.world = new Level();
+			super(320, 240, 60, true);
+			
+			FP.screen.scale = 2;
 		}
 		
 		public override function init (): void
 		{
-			super.init();
+			Editor.init();
+			
+			FP.world = new Level();
 		}
 		
 		public override function update (): void
