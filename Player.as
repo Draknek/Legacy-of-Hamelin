@@ -46,6 +46,19 @@ package
 			
 			var speed:int = Main.TW;
 			
+			var toX:int = x+speed*dx;
+			var toY:int = y+speed*dy;
+			
+			if (toX < 0 || toY < 0 || toX >= FP.width || toY >= FP.height) {
+				return;
+			}
+			
+			if (collide("solid", toX, toY) || collide("water", toX, toY)) {
+				return;
+			}
+			
+			//var e:Entity = collide("rat", toX, toY);
+			
 			moveTween = FP.tween(this, {x: x + speed*dx, y: y + speed*dy}, MOVE_TIME, {tweener:FP.world});
 			
 			//Audio.playNote();

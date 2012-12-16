@@ -23,8 +23,13 @@ package
 			this.src = src;
 			
 			bg = src.getSubMap(0, 0, src.columns, src.rows);
-			
 			addGraphic(bg, 1000);
+			
+			var solidMask:Grid = new Grid(FP.width, FP.height, src.tileWidth, src.tileHeight);
+			var waterMask:Grid = new Grid(FP.width, FP.height, src.tileWidth, src.tileHeight);
+			
+			addMask(solidMask, "solid");
+			addMask(waterMask, "water");
 			
 			for (var i:int = 0; i < src.columns; i++) {
 				for (var j:int = 0; j < src.rows; j++) {
@@ -38,6 +43,12 @@ package
 					switch (tile) {
 						case 1:
 							e = new Player(x, y);
+						break;
+						case 7:
+							solidMask.setTile(i, j, true);
+						break;
+						case 8:
+							waterMask.setTile(i, j, true);
 						break;
 					}
 					
