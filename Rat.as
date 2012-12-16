@@ -19,6 +19,8 @@ package
 		
 		public var moveTween:Tween;
 		
+		public var direction:String;
+		
 		public function Rat (_x:Number, _y:Number)
 		{
 			x = _x;
@@ -29,7 +31,22 @@ package
 			setHitbox(Main.TW, Main.TW);
 			
 			sprite = new Spritemap(Gfx, 16, 16);
-			sprite.frame = 3;
+			
+			var dirs:Array = ["down", "up", "left", "right"];
+			
+			var framesPerDirection:int = 4;
+			
+			for (var i:int = 0; i < dirs.length; i++) {
+				var dirString:String = dirs[i];
+				sprite.add(dirString, [i*framesPerDirection], 0.1);
+				sprite.add("walk" + dirString,
+					FP.frames(i*framesPerDirection, i*framesPerDirection + 4),
+					0.25);
+			}
+			
+			direction = "right";
+			
+			sprite.play(direction);
 			
 			graphic = sprite;
 		}
@@ -44,6 +61,13 @@ package
 			if (hasMoved) return;
 			
 			hasMoved = true;
+			
+			if (dx < 0) direction = "left";
+			else if (dx > 0) direction = "right";
+			else if (dy < 0) direction = "up";
+			else if (dy > 0) direction = "down";
+			
+			sprite.play(direction);
 			
 			var speed:int = Main.TW;
 			
@@ -74,7 +98,14 @@ package
 				}
 			}
 			
-			moveTween = FP.tween(this, {x: x + speed*dx, y: y + speed*dy}, Player.MOVE_TIME);
+			sprite.play("walk" + direction);
+			
+			moveTween = FP.tween(this, {x: x + speed*dx, y: y + speed*dy}, Player.MOVE_TIME, stopWalk);
+		}
+		
+		public function stopWalk ():void
+		{
+			sprite.play(direction);
 		}
 	}
 }
