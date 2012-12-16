@@ -27,6 +27,10 @@ package
 			
 			sprite = new Spritemap(Gfx, 16, 16);
 			
+			sprite.add("jig", [0,1,2], 1 / 30);
+			
+			sprite.play("jig");
+			
 			graphic = sprite;
 		}
 		
