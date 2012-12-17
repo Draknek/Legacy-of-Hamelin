@@ -36,6 +36,8 @@ package
 		
 		public override function update (): void
 		{
+			layer = -y;
+			
 			if (moveTween && moveTween.active) {
 				return;
 			}

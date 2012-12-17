@@ -19,7 +19,7 @@ package
 			
 			type = "solid";
 			
-			layer = -y*1000;
+			layer = -y;
 			
 			setHitbox(Main.TW, Main.TW);
 			
