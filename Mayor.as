@@ -39,10 +39,33 @@ package
 		public function postUpdate ():void
 		{
 			if (! hasSomethingToSay) {
+				var rat:Rat;
+				if (! Level(world).stealingChildren) {
+					var allDead:Boolean = true;
+					
+					for each (rat in Level(world).rats) {
+						if (rat.active) {
+							allDead = false;
+							break;
+						}
+					}
+					
+					if (allDead) {
+						hasSomethingToSay = true;
+						
+						exclamation = new Entity;
+						exclamation.x = x;
+						exclamation.y = y - Main.TW;
+						exclamation.layer = -1000;
+						exclamation.graphic = new Stamp(ExclamationGfx);
+						
+						world.add(exclamation);
+					}
+				}
 				if (! Level(world).killingRats) {
 					var allInSewers:Boolean = true;
 					
-					for each (var rat:Rat in Level(world).rats) {
+					for each (rat in Level(world).rats) {
 						if (rat.type == "rat") {
 							allInSewers = false
 							break;
@@ -68,8 +91,14 @@ package
 		{
 			if (exclamation) {
 				world.remove(exclamation);
-				Level(world).killingRats = true;
+				exclamation = null;
 				hasSomethingToSay = false;
+				
+				if (Level(world).killingRats) {
+					Level(world).stealingChildren = true;
+				} else {
+					Level(world).killingRats = true;
+				}
 			}
 		}
 	}
