@@ -96,6 +96,9 @@ package
 				
 				if (Level(world).killingRats) {
 					Level(world).stealingChildren = true;
+					for each (var child:Child in Level(world).children) {
+						child.brainwash();
+					}
 				} else {
 					Level(world).killingRats = true;
 				}
