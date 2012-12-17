@@ -54,7 +54,7 @@ package
 							e = new Sewer(x, y);
 						break;
 						case 7:
-							solidMask.setTile(i, j, true);
+							e = new Fence(i, j, src);
 						break;
 						case 8:
 							waterMask.setTile(i, j, true);
