@@ -26,7 +26,11 @@ package
 		
 		public override function init (): void
 		{
+			LevelList.init();
 			Editor.init();
+			if (devMode) {
+				CopyPaste.init(stage, pasteCallback);
+			}
 			
 			FP.world = new Level();
 		}
@@ -40,6 +44,12 @@ package
 			
 			super.update();
 		}
+		
+		public function pasteCallback (data:String): void
+		{
+			
+		}
+		
 	}
 }
 

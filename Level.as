@@ -114,7 +114,7 @@ package
 			
 			super.update();
 			
-			mayor.postUpdate();
+			if (mayor) mayor.postUpdate();
 		}
 		
 		public override function render (): void

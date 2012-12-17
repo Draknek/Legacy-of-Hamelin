@@ -8,7 +8,7 @@ package
 	import flash.display.*;
 	import flash.utils.*;
 	
-	public class Editor extends LoadableWorld
+	public class Editor extends World
 	{
 		[Embed(source="images/tiles.png")]
 		public static const EditTilesGfx: Class;
@@ -19,6 +19,7 @@ package
 		public static var paletteMouseover:Stamp;
 		
 		public static var src:Tilemap;
+		public static var data:LevelData;
 		
 		public static var clipboard:Tilemap;
 		
@@ -37,7 +38,9 @@ package
 			} /*else {
 				startLevel = new DefaultRoom;
 			}*/
-			src.loadFromString(startLevel);
+			
+			data = new LevelData(startLevel);
+			src = data.tiles;
 			src.updateAll();
 		}
 		
@@ -236,22 +239,10 @@ package
 			return src.getTile(i,j);
 		}
 		
-		public override function getWorldData (): *
-		{
-			return src.saveToString();
-		}
-		
-		public override function setWorldData (data: ByteArray): void {
-			var string:String = data.toString();
-			
-			src.loadFromString(string);
-			
-			changed();
-		}
-		
 		private static function changed (): void
 		{
-			Main.so.data.editState = src.saveToString();
+			Main.so.data.editState = data.toString();
+			CopyPaste.data = data.toString();
 		}
 	}
 }
