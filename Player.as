@@ -77,7 +77,7 @@ package
 			
 			moveTween = FP.tween(this, {x: toX, y: toY}, MOVE_TIME, {tweener:FP.world});
 			
-			//Audio.playNote();
+			Audio.playNote();
 		}
 	}
 }
