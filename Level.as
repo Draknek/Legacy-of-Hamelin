@@ -14,6 +14,8 @@ package
 		
 		public var rats:Array = [];
 		
+		public var killingRats:Boolean = false;
+		
 		public function Level (src:Tilemap = null, i:int = 0)
 		{
 			levelID = i;
@@ -95,6 +97,21 @@ package
 			}
 			
 			super.update();
+			
+			if (! killingRats) {
+				var allInSewers:Boolean = true;
+				
+				for each (rat in rats) {
+					if (rat.type == "rat") {
+						allInSewers = false
+						break;
+					}
+				}
+				
+				if (allInSewers) {
+					killingRats = true;
+				}
+			}
 		}
 		
 		public override function render (): void

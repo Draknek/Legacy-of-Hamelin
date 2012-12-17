@@ -58,12 +58,16 @@ package
 		
 		public function tryMoving (dx:int, dy:int): void
 		{
-			if (hasMoved) return;
+			if (hasMoved || ! active) return;
 			
 			hasMoved = true;
 			
 			toX = x;
 			toY = y;
+			
+			if (! visible && Level(world).killingRats) {
+				type = "rat";
+			}
 			
 			if (type != "rat") return;
 			
@@ -74,6 +78,9 @@ package
 			
 			sprite.play(direction);
 			
+			var halfMove:Boolean = false;
+			var slowMove:Boolean = false;
+			
 			var speed:int = Main.TW;
 			
 			var tryX:int = x+speed*dx;
@@ -83,8 +90,16 @@ package
 				return;
 			}
 			
-			if (collide("solid", tryX, tryY) || collide("water", tryX, tryY)) {
+			if (collide("solid", tryX, tryY)) {
 				return;
+			}
+			
+			if (collide("water", tryX, tryY)) {
+				if (Level(world).killingRats) {
+					halfMove = true;
+				} else {
+					return;
+				}
 			}
 			
 			var rat:Rat = collide("rat", tryX, tryY) as Rat;
@@ -100,9 +115,6 @@ package
 			toX = tryX;
 			toY = tryY;
 			
-			var halfMove:Boolean = false;
-			var slowMove:Boolean = false;
-			
 			tryX += speed*dx;
 			tryY += speed*dy;
 			
@@ -113,7 +125,10 @@ package
 			else if (tryX < 0 || tryY < 0 || tryX >= FP.width || tryY >= FP.height) {
 				halfMove = true;
 			}
-			else if (collide("solid", tryX, tryY) || collide("water", tryX, tryY)) {
+			else if (collide("solid", tryX, tryY)) {
+				halfMove = true;
+			}
+			else if (! Level(world).killingRats && collide("water", tryX, tryY)) {
 				halfMove = true;
 			}
 			else if (rat && tryX == rat.toX && tryY == rat.toY) {
@@ -132,7 +147,7 @@ package
 				
 				var sewer:Sewer = collide("sewer", toX, toY) as Sewer;
 				
-				if (sewer && ! sewer.full) {
+				if (! Level(world).killingRats && sewer && ! sewer.full) {
 					halfMove = true;
 				}
 			}
@@ -140,6 +155,12 @@ package
 			if (! halfMove) {
 				toX = tryX;
 				toY = tryY;
+			}
+			
+			if (! visible) {
+				visible = true;
+				sewer = collide("sewer", x, y) as Sewer;
+				sewer.removeRat();
 			}
 			
 			sprite.play("walk" + direction);
@@ -155,9 +176,15 @@ package
 		{
 			sprite.play(direction);
 			
+			if (collide("water", x, y)) {
+				visible = false;
+				active = false;
+				collidable = false;
+			}
+			
 			var sewer:Sewer = collide("sewer", x, y) as Sewer;
 			
-			if (sewer && ! sewer.full) {
+			if (! Level(world).killingRats && sewer && ! sewer.full) {
 				sewer.addRat();
 				visible = false;
 				type = "";
