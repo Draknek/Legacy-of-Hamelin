@@ -62,6 +62,9 @@ package
 			
 			hasMoved = true;
 			
+			toX = x;
+			toY = y;
+			
 			if (type != "rat") return;
 			
 			if (dx < 0) direction = "left";
@@ -73,36 +76,79 @@ package
 			
 			var speed:int = Main.TW;
 			
-			toX = x+speed*dx;
-			toY = y+speed*dy;
+			var tryX:int = x+speed*dx;
+			var tryY:int = y+speed*dy;
 			
-			if (toX < 0 || toY < 0 || toX >= FP.width || toY >= FP.height) {
-				toX = x;
-				toY = y;
+			if (tryX < 0 || tryY < 0 || tryX >= FP.width || tryY >= FP.height) {
 				return;
 			}
 			
-			if (collide("solid", toX, toY) || collide("water", toX, toY)) {
-				toX = x;
-				toY = y;
+			if (collide("solid", tryX, tryY) || collide("water", tryX, tryY)) {
 				return;
 			}
 			
-			var rat:Rat = collide("rat", toX, toY) as Rat;
+			var rat:Rat = collide("rat", tryX, tryY) as Rat;
 			
 			if (rat) {
 				rat.tryMoving(dx, dy);
 				
 				if (rat.x == rat.toX && rat.y == rat.toY) {
-					toX = x;
-					toY = y;
 					return;
 				}
 			}
 			
+			toX = tryX;
+			toY = tryY;
+			
+			var halfMove:Boolean = false;
+			var slowMove:Boolean = false;
+			
+			tryX += speed*dx;
+			tryY += speed*dy;
+			
+			if (collide("player", toX, toY)) {
+				halfMove = true;
+				slowMove = true;
+			}
+			else if (tryX < 0 || tryY < 0 || tryX >= FP.width || tryY >= FP.height) {
+				halfMove = true;
+			}
+			else if (collide("solid", tryX, tryY) || collide("water", tryX, tryY)) {
+				halfMove = true;
+			}
+			else if (rat && tryX == rat.toX && tryY == rat.toY) {
+				halfMove = true;
+			}
+			else {
+				rat = collide("rat", tryX, tryY) as Rat;
+				
+				if (rat) {
+					rat.tryMoving(dx, dy);
+					
+					if (tryX == rat.toX && tryY == rat.toY) {
+						halfMove = true;
+					}
+				}
+				
+				var sewer:Sewer = collide("sewer", toX, toY) as Sewer;
+				
+				if (sewer && ! sewer.full) {
+					halfMove = true;
+				}
+			}
+			
+			if (! halfMove) {
+				toX = tryX;
+				toY = tryY;
+			}
+			
 			sprite.play("walk" + direction);
 			
-			moveTween = FP.tween(this, {x: x + speed*dx, y: y + speed*dy}, Player.MOVE_TIME, stopWalk);
+			var tweenTime:int = Player.MOVE_TIME;
+			
+			if (halfMove && ! slowMove) tweenTime *= 0.5;
+			
+			moveTween = FP.tween(this, {x: toX, y: toY}, tweenTime, stopWalk);
 		}
 		
 		public function stopWalk ():void
