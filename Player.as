@@ -57,7 +57,7 @@ package
 				return;
 			}
 			
-			if (collide("solid", toX, toY) || collide("water", toX, toY)) {
+			if (collide("solid", toX, toY) || collide("water", toX, toY) || collide("sewer", toX, toY)) {
 				return;
 			}
 			
