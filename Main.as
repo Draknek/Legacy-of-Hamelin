@@ -32,7 +32,7 @@ package
 				CopyPaste.init(stage, pasteCallback);
 			}
 			
-			FP.world = new Level();
+			FP.world = new Level(null, 1);
 		}
 		
 		public override function update (): void

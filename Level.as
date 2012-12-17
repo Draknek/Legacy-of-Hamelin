@@ -25,7 +25,11 @@ package
 			levelID = i;
 			
 			if (! src) {
-				src = Editor.src;
+				if (levelID == 0) {
+					src = Editor.src;
+				} else {
+					src = LevelList.levels[levelID].tiles;
+				}
 			}
 			
 			this.src = src;
@@ -84,6 +88,14 @@ package
 						bg.setTile(i, j, 0);
 					}
 				}
+			}
+			
+			if (! mayor) {
+				var text:Text = new Text("FIN", FP.width*0.5, FP.height*0.5, {color: 0x1b2632, size: 80});
+				
+				text.centerOO();
+				
+				addGraphic(text, -9999);
 			}
 		}
 		
