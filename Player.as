@@ -42,6 +42,10 @@ package
 				return;
 			}
 			
+			if (x < 0 || y < 0 || x >= FP.width || y >= FP.height) {
+				// TODO: next level
+			}
+			
 			var dx:int = int(Input.check(Key.RIGHT)) - int(Input.check(Key.LEFT));
 			
 			if (! dx) {
@@ -56,10 +60,20 @@ package
 			var toY:int = y+speed*dy;
 			
 			if (toX < 0 || toY < 0 || toX >= FP.width || toY >= FP.height) {
+				if (Level(world).children.length) return;
+			}
+			
+			var e:Entity = collide("solid", toX, toY);
+			
+			if (e) {
+				if (e is Mayor) {
+					Mayor(e).speak();
+				}
+				
 				return;
 			}
 			
-			if (collide("solid", toX, toY) || collide("water", toX, toY) || collide("sewer", toX, toY)) {
+			if (collide("water", toX, toY) || collide("sewer", toX, toY)) {
 				return;
 			}
 			
@@ -75,6 +89,22 @@ package
 			
 			for each (rat in Level(world).rats) {
 				rat.tryMoving(dx, dy);
+			}
+			
+			if (Level(world).stealingChildren) {
+				var child:Child = collide("child", toX, toY) as Child;
+				
+				if (child) {
+					child.tryMoving(dx, dy);
+					
+					if (child.x == child.toX && child.y == child.toY) {
+						return;
+					}
+				}
+				
+				for each (child in Level(world).children) {
+					child.tryMoving(dx, dy);
+				}
 			}
 			
 			moveTween = FP.tween(this, {x: toX, y: toY}, MOVE_TIME, {tweener:FP.world});

@@ -13,8 +13,12 @@ package
 		public var levelID:int;
 		
 		public var rats:Array = [];
+		public var children:Array = [];
 		
 		public var killingRats:Boolean = false;
+		public var stealingChildren:Boolean = false;
+		
+		public var mayor:Mayor;
 		
 		public function Level (src:Tilemap = null, i:int = 0)
 		{
@@ -51,6 +55,14 @@ package
 						case 2:
 							e = new Rat(x, y);
 							rats.push(e);
+						break;
+						case 3:
+							mayor = new Mayor(x, y);
+							e = mayor;
+						break;
+						case 5:
+							e = new Child(x, y);
+							children.push(e);
 						break;
 						case 6:
 							e = new Sewer(x, y);
@@ -96,22 +108,13 @@ package
 				rat.hasMoved = false;
 			}
 			
+			for each (var child:Child in children) {
+				child.hasMoved = false;
+			}
+			
 			super.update();
 			
-			if (! killingRats) {
-				var allInSewers:Boolean = true;
-				
-				for each (rat in rats) {
-					if (rat.type == "rat") {
-						allInSewers = false
-						break;
-					}
-				}
-				
-				if (allInSewers) {
-					killingRats = true;
-				}
-			}
+			mayor.postUpdate();
 		}
 		
 		public override function render (): void
