@@ -107,7 +107,7 @@ package
 			}
 			
 			if (Main.devMode && Input.pressed(Key.N)) {
-				FP.world = new Level(null, levelID + 1);
+				//nextLevel();
 				return;
 			}
 			
@@ -127,6 +127,11 @@ package
 			super.update();
 			
 			if (mayor) mayor.postUpdate();
+		}
+		
+		public function nextLevel ():void
+		{
+			FP.world = new Level(null, levelID + 1);
 		}
 		
 		public override function render (): void

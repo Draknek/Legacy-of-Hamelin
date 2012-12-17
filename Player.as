@@ -43,7 +43,7 @@ package
 			}
 			
 			if (x < 0 || y < 0 || x >= FP.width || y >= FP.height) {
-				// TODO: next level
+				Level(world).nextLevel();
 			}
 			
 			var dx:int = int(Input.check(Key.RIGHT)) - int(Input.check(Key.LEFT));
